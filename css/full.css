@@ -45,12 +45,15 @@ body {
     
 }
 
+.counter {text-align: center; padding: 30px;}
+
 #help2 {height: 100vh;}
 
 .headers { list-style-type: none; font-size: 30px; color: white; display: inline-flex; padding-left: 0px;}
-.headers li {padding: 30px; }
+.headers li {padding: 20px; }
+.headers a {color: white;}
 
-#transparent {background-color: transparent;}
+#transparent {background-color: transparent; position: absolute;}
 
 #headerPadding {margin-bottom: 40px;  margin-left: 0px;}
 
@@ -60,7 +63,7 @@ body {
 
 .navbar-inverse {border-color: transparent;}
 
-#menu {}
+#videos {margin-top: 170px; margin-bottom: 100px;}
 
 #center2 {position: fixed;
   top: 50%;
