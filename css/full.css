@@ -49,7 +49,7 @@ body {
 
 #help2 {height: 100vh;}
 
-.headers {list-style-type: none; text-align: center; font-size: 30px; color: white; display: inline-flex; padding-left: 0px; margin: auto;}
+.headers {list-style-type: none; text-align: center; font-size: 30px; color: white; display: inline-flex; padding-left: 0px; margin-bottom: ;}
 .headers li {padding: 20px; }
 .headers a {color: white;}
 
