@@ -70,3 +70,10 @@ body {
   transform: translateY(-50%); text-align: center;}
 
 #center2 h1 {font-size: 300px;}
+
+.centered {margin: 0 auto; display: block; margin-top: 150px ; }
+
+
+
+
+
