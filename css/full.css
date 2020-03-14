@@ -6,11 +6,9 @@
 
 body {
     margin-top: 50px; /* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    background: url('https://streak.club/img/dXBsb2Fkcy9pbWFnZS81NjExLmdpZg==/600x/NkPy5J.gif');
-    background-repeat: repeat;
+    background: url('../img/lotac.jpg');
+    background-size: contain;
     background-color: black;
-    background-size: 100px;
-
 }
 
 #HELP {margin-top: 50px; /* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
@@ -38,12 +36,6 @@ body {
     }
 }
 
-/* Header Image Background - Change the URL below to your image path (example: ../images/background.jpg) */
-
-.full {
-    
-    
-}
 
 .counter {text-align: center; padding: 30px;}
 
@@ -73,6 +65,10 @@ body {
 
 .centered {margin: 0 auto; display: block; margin-top: 150px ; }
 
+/* 2020 CHANGES */
+#menu {
+    margin-top: 17rem;
+}
 
 
 
