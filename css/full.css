@@ -45,6 +45,10 @@ body {
 .headers li {padding: 20px; }
 .headers a {color: white;}
 
+.footers {list-style-type: none; text-align: center; font-size: 30px; color: white; display: inline-flex; padding-left: 0px; margin-bottom: ;}
+.footers li {padding: 20px; }
+.footers a {color: white;}
+
 #transparent {background-color: transparent; position: absolute;}
 
 #headerPadding {margin-bottom: 40px;  margin-left: 0px;}
@@ -70,6 +74,18 @@ body {
     margin-top: 17rem;
 }
 
+.responsive-img {
+    height: auto;
+    width: 100%;
+}
 
+@media (max-width: 620px) {
+    .footers img {
+        width: 35px;
+    }
+    .footers li {
+        padding: 5px;
+    }
+}
 
 
