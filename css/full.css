@@ -65,9 +65,10 @@ body {
 
 #headerPadding {margin-bottom: 40px;  margin-left: 0px;}
 
+.navbar-header {margin-top: 7px;}
 .navbar-header a {float: none;}
 .navbar-header {width: 100%; margin:0 auto; margin-top: 30px;}
-.navbar-header img {width: 66px;}
+.navbar-header img {width: 66px; margin-top: -60px;}
 
 .navbar-inverse {border-color: transparent;}
 
@@ -110,7 +111,7 @@ body {
 .navbar-brand h1 {
     font-family: "Davida-Regular";
     display: inline;
-    font-size: 7rem;
+    font-size: 10rem;
 }
 
 
