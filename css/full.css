@@ -62,7 +62,8 @@ body {
 
 .navbar-inverse {border-color: transparent;}
 
-#videos {margin-top: 200px; margin-bottom: 100px;}
+#videos, #contact {margin-top: 200px; margin-bottom: 100px;}
+#contact {background-color: #fff9;border-radius: 10px;}
 
 #center2 {position: fixed;
   top: 50%;
