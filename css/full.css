@@ -1,15 +1,21 @@
 @font-face {
-  font-family: "Marshall";
-  src: 
-    url("/fonts/marshall.ttf") format("truetype"), /* Safari, Android, iOS */
-    url("/fonts/marshall.woff") format("woff"), /* Modern Browsers */
-    url("/fonts/marshall.woff2") format("woff2"); /* Modern Browsers */
-  font-weight: normal;
-  font-style: normal;
+    font-family: "Busorama";
+    src: 
+        url("../fonts/busorama.woff2") format("woff2"), /* Modern Browsers */
+        url("../fonts/busorama.woff") format("woff"), /* Modern Browsers */
+        url("../fonts/busorama.ttf") format("truetype"); /* Safari, Android, iOS */
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 body {
     margin-top: 50px; /* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-    background: url('../img/clouds.jpg');
+    /* Use a single, non-repeating background that covers the viewport and scrolls with page content */
+    background-image: url('../img/background.jpeg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% auto;
+    background-attachment: fixed; /* `scroll` = image moves with page; use `fixed` for parallax */
     background-color: black;
 }
 
@@ -105,7 +111,7 @@ body {
 }
 
 .navbar-brand h1 {
-    font-family: "Marshall";
+    font-family: "Busorama";
     display: inline;
     font-size: 10rem;
     color: #ffffffe3;
