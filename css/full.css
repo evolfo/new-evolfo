@@ -49,11 +49,11 @@ body {
 
 #help2 {height: 100vh;}
 
-.headers {list-style-type: none; text-align: center; font-size: 30px; color: white; display: inline-flex; padding-left: 0px; margin-bottom: 0;}
+.headers {list-style-type: none; text-align: center; font-size: 25px; color: white; display: inline-flex; padding-left: 0px; margin-bottom: 0;}
 .headers li {padding: 15px; }
 .headers a {color: white;}
 
-.footers {list-style-type: none; text-align: center; font-size: 30px; color: white; display: inline-flex; padding-left: 0px; margin-bottom: 0;}
+.footers {list-style-type: none; text-align: center; font-size: 25px; color: white; display: inline-flex; padding-left: 0px; margin-bottom: 0;}
 .footers li {padding: 1.2rem; }
 .footers a {color: white;}
 
@@ -70,6 +70,8 @@ body {
 
 #videos, #contact {margin-top: 200px; margin-bottom: 100px;}
 #contact {background-color: #fff9;border-radius: 10px;}
+
+#about {margin-top: 270px; color: white; padding: 2rem;}
 
 #center2 {position: fixed;
   top: 50%;
@@ -131,6 +133,10 @@ body {
         animation: none;
         background-size: cover;
     }
+
+    #about {
+        margin-top: 250px;
+    }
 }
 /* Reduce visual 'zoom' on very small screens by fitting image width */
 @media (max-width: 480px) {
@@ -142,6 +148,10 @@ body {
     }
     #HELP {
         background-size: cover;
+    }
+
+    #about {
+        margin-top: 150px;
     }
 
     .index-container {
