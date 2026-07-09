@@ -68,7 +68,13 @@
             <div class="container">
                 <div class="col-sm-12 index-container" style="text-align: center;">
                     <!-- Begin Substack Signup Form -->
-                    <iframe src="https://evolfo.substack.com/embed" width="480" height="320" style="border: 1px solid #EEE; background: white" frameborder="0" scrolling="no"></iframe>
+                    <div id="subscribe_signup">
+                        <form action="https://evolfo.substack.com/api/v1/free?nojs=true" method="post" target="_blank">
+                            <input type="email" name="email" placeholder="email address" required>
+                            <input type="hidden" name="source" value="subscribe_page">
+                            <button type="submit">Subscribe</button>
+                        </form>
+                    </div>
                     <!-- End Substack Signup Form -->
                     <iframe src="https://evolfo.tumblr.com/" width="100%" style="margin-top: 20px; height: 250vh; width: 85%;" frameborder="0"></iframe>
                 </div>
@@ -92,5 +98,8 @@
 
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
+
+        <!-- Subscribe form -->
+        <script src="js/subscribe.js"></script>
     </body>
 </html>

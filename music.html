@@ -72,8 +72,12 @@
         <div class="container">
             <div class="col-sm-12 text-center" id="videos">
                 <!-- Begin Substack Signup Form -->
-                <div style="padding-bottom: 2rem;">
-                    <iframe src="https://evolfo.substack.com/embed" width="480" height="320" style="border: 1px solid #EEE; background: white" frameborder="0" scrolling="no"></iframe>
+                <div id="subscribe_signup" style="padding-bottom: 2rem;">
+                    <form action="https://evolfo.substack.com/api/v1/free?nojs=true" method="post" target="_blank">
+                        <input type="email" name="email" placeholder="email address" required>
+                        <input type="hidden" name="source" value="subscribe_page">
+                        <button type="submit">Subscribe</button>
+                    </form>
                 </div>
                 <!-- End Substack Signup Form -->
                 <iframe style="border: 0; width: 350px; height: 470px;" src="https://bandcamp.com/EmbeddedPlayer/album=1072992119/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/transparent=true/" seamless><a href="https://evolfo.bandcamp.com/album/of-love">Of Love by Evolfo</a></iframe>
@@ -90,6 +94,9 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+
+    <!-- Subscribe form -->
+    <script src="js/subscribe.js"></script>
 
 </body>
 
