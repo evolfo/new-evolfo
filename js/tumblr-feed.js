@@ -312,12 +312,21 @@
         status.hidden = !message;
     }
 
+    // "Try again": start over from the primary source, and pause briefly so that
+    // a request that fails instantly still visibly does something.
+    function retry() {
+        if (loading) { return; }
+        if (!sourceWorked) { sourceIndex = 0; }
+        setStatus('Trying again…');
+        setTimeout(load, 500);
+    }
+
     function setError(message) {
         setStatus(message + ' ');
         var b = el('button', 'tf-retry');
         b.type = 'button';
         b.textContent = 'Try again';
-        b.addEventListener('click', load);
+        b.addEventListener('click', retry);
         status.appendChild(b);
         status.appendChild(document.createTextNode(' or '));
         status.appendChild(externalLink(BLOG + '/', 'read it on Tumblr', 'tf-fallback'));
