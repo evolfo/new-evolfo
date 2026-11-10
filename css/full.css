@@ -343,6 +343,11 @@ body {
     cursor: pointer;
 }
 
+/* Our display rules below would otherwise override the [hidden] attribute. */
+#tumblr-feed [hidden] {
+    display: none !important;
+}
+
 #tumblr-feed .tf-more {
     display: block;
     margin: 0 auto 40px;
