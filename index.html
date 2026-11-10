@@ -76,7 +76,10 @@
                         </form>
                     </div>
                     <!-- End Substack Signup Form -->
-                    <iframe src="https://evolfo.tumblr.com/" width="100%" style="margin-top: 20px; height: 250vh; width: 85%;" frameborder="0"></iframe>
+                    <!-- Blog posts, loaded from Tumblr's JSON API by js/tumblr-feed.js -->
+                    <div id="tumblr-feed" aria-live="polite">
+                        <noscript><p class="tf-status"><a href="https://evolfo.tumblr.com/" target="_blank" rel="noopener">Read our blog on Tumblr</a></p></noscript>
+                    </div>
                 </div>
                 
             </div>
@@ -98,6 +101,9 @@
 
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
+
+        <!-- Tumblr blog feed -->
+        <script src="js/tumblr-feed.js"></script>
 
         <!-- Subscribe form -->
         <script src="js/subscribe.js"></script>

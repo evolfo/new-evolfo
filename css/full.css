@@ -218,3 +218,150 @@ body {
     font-size: 1.1rem;
     font-weight: bold;
 }
+
+/* Tumblr blog feed (js/tumblr-feed.js) */
+#tumblr-feed {
+    max-width: 640px;
+    margin: 30px auto 0;
+    padding: 0 12px;
+    text-align: left;
+}
+
+#tumblr-feed .tf-post {
+    background: #fff;
+    color: #222;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+#tumblr-feed .tf-body {
+    padding: 0;
+}
+
+#tumblr-feed .tf-title,
+#tumblr-feed .tf-text,
+#tumblr-feed .tf-post > .tf-body > .tf-title {
+    padding: 16px 20px 0;
+    margin: 0;
+}
+
+#tumblr-feed .tf-title {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1.25;
+}
+
+#tumblr-feed .tf-text {
+    font-size: 1.6rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+#tumblr-feed .tf-text p {
+    margin: 0 0 1em;
+}
+
+#tumblr-feed .tf-text:last-child {
+    padding-bottom: 4px;
+}
+
+#tumblr-feed a {
+    color: #d1652d;
+}
+
+#tumblr-feed img,
+#tumblr-feed video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+
+#tumblr-feed figure {
+    margin: 0;
+}
+
+#tumblr-feed .npf_row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#tumblr-feed .npf_row > figure {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+#tumblr-feed .tf-video {
+    position: relative;
+    background: #000;
+}
+
+#tumblr-feed .tf-video iframe,
+#tumblr-feed figure iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    border: 0;
+}
+
+#tumblr-feed .tf-meta {
+    padding: 12px 20px 14px;
+    font-size: 1.2rem;
+}
+
+#tumblr-feed .tf-date {
+    color: #777;
+    text-decoration: none;
+}
+
+#tumblr-feed .tf-date:hover {
+    text-decoration: underline;
+}
+
+#tumblr-feed .tf-status {
+    text-align: center;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+#tumblr-feed .tf-status a,
+.tf-status a,
+#tumblr-feed .tf-retry {
+    color: #fff;
+    text-decoration: underline;
+}
+
+#tumblr-feed .tf-retry {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+#tumblr-feed .tf-more {
+    display: block;
+    margin: 0 auto 40px;
+    border: none;
+    border-radius: 6px;
+    background: #e8763c;
+    color: #fff;
+    padding: 14px 28px;
+    font-size: 1.6rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#tumblr-feed .tf-more:hover:not(:disabled) {
+    background: #d1652d;
+}
+
+#tumblr-feed .tf-more:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
