@@ -2,13 +2,20 @@
  * Renders the Evolfo Tumblr blog inline.
  *
  * Tumblr put a bot-check page in front of evolfo.tumblr.com, so the blog can no
- * longer be shown in an iframe. The legacy JSON API is still open and can be
- * loaded with a <script> tag (JSONP), so we fetch posts from there and draw them.
+ * longer be shown in an iframe. Instead we load posts with a <script> tag (JSONP)
+ * from Tumblr's API and draw them ourselves. Two sources are tried in order:
+ *
+ *   1. The official v2 API, using a read-only OAuth consumer key.
+ *   2. The legacy /api/read/json endpoint (no key), as a fallback.
+ *
+ * The consumer key only allows reading public blog data, so it is safe to ship in
+ * client-side code. Both sources are normalized to the same post shape below.
  */
 (function () {
     'use strict';
 
     var BLOG = 'https://evolfo.tumblr.com';
+    var API_KEY = 'vzFuoFWVD7LuCmWOJfrjPbdbWZmnpnzJNuTSsrjmEbRC1jguVw';
     var PAGE_SIZE = 10;
     var TIMEOUT_MS = 10000;
     var CALLBACK = '__tumblrFeedCallback';
@@ -150,35 +157,105 @@
         return a;
     }
 
+    // ---- sources ----------------------------------------------------------
+    // Each source builds a URL and turns the response into { posts, total },
+    // where every post is { type, url, ts, title, body, photos, link, linkUrl,
+    // linkText, player, videoUrl }. Return null if the response is unusable.
+
+    function pickPlayer(players) {
+        if (!players || !players.length) { return ''; }
+        var best = players[players.length - 1];
+        players.forEach(function (p) { if (p.width === 500) { best = p; } });
+        return best.embed_code || '';
+    }
+
+    var SOURCES = [
+        {
+            name: 'v2',
+            url: function (offset) {
+                return 'https://api.tumblr.com/v2/blog/evolfo.tumblr.com/posts?api_key=' + API_KEY +
+                    '&limit=' + PAGE_SIZE + '&offset=' + offset + '&callback=' + CALLBACK;
+            },
+            parse: function (data) {
+                if (!data || !data.meta || data.meta.status !== 200 || !data.response) { return null; }
+                var r = data.response;
+                return {
+                    total: r.total_posts || 0,
+                    posts: (r.posts || []).map(function (p) {
+                        return {
+                            type: p.type,
+                            url: p.post_url,
+                            ts: p.timestamp,
+                            title: p.title || '',
+                            body: p.body || p.caption || '',
+                            photos: (p.photos || []).map(function (x) { return x.original_size && x.original_size.url; }),
+                            link: p.link_url || '',
+                            linkUrl: p.url || '',
+                            linkText: p.title || '',
+                            linkDesc: p.description || '',
+                            player: pickPlayer(p.player),
+                            videoUrl: p.permalink_url || ''
+                        };
+                    })
+                };
+            }
+        },
+        {
+            name: 'legacy',
+            url: function (offset) {
+                return BLOG + '/api/read/json?num=' + PAGE_SIZE + '&start=' + offset +
+                    '&callback=' + CALLBACK;
+            },
+            parse: function (data) {
+                if (!data || !data.posts) { return null; }
+                return {
+                    total: parseInt(data['posts-total'], 10) || 0,
+                    posts: data.posts.map(function (p) {
+                        var photos = p.photos && p.photos.length ? p.photos : (p['photo-url-1280'] ? [p] : []);
+                        return {
+                            type: { regular: 'text' }[p.type] || p.type,
+                            url: p['url-with-slug'] || p.url,
+                            ts: p['unix-timestamp'],
+                            title: p['regular-title'] || '',
+                            body: p['regular-body'] || p['photo-caption'] || p['video-caption'] || '',
+                            photos: photos.map(function (x) { return x['photo-url-1280'] || x['photo-url-500']; }),
+                            link: p['photo-link-url'] || '',
+                            linkUrl: p['link-url'] || '',
+                            linkText: p['link-text'] || '',
+                            linkDesc: p['link-description'] || '',
+                            player: p['video-player-500'] || p['video-player'] || '',
+                            videoUrl: p['video-source'] || ''
+                        };
+                    })
+                };
+            }
+        }
+    ];
+
     // ---- post renderers ---------------------------------------------------
 
-    function photoImg(url, alt) {
-        var img = el('img', 'tf-photo');
-        img.src = url;
-        img.alt = alt || '';
-        img.loading = 'lazy';
-        return img;
+    function titleNode(post) {
+        var h = el('h3', 'tf-title');
+        h.textContent = post.title;
+        return h;
     }
 
     var renderers = {
-        regular: function (post, body) {
-            if (post['regular-title']) {
-                var h = el('h3', 'tf-title');
-                h.textContent = post['regular-title'];
-                body.appendChild(h);
-            }
-            body.appendChild(html(el('div', 'tf-text'), post['regular-body']));
+        text: function (post, body) {
+            if (post.title) { body.appendChild(titleNode(post)); }
+            body.appendChild(html(el('div', 'tf-text'), post.body));
         },
 
         photo: function (post, body) {
-            var photos = post.photos && post.photos.length ? post.photos : [post];
-            photos.forEach(function (p) {
-                var src = p['photo-url-1280'] || p['photo-url-500'];
-                if (!src) { return; }
-                var img = photoImg(src);
-                if (post['photo-link-url'] && isSafeLink(post['photo-link-url'])) {
+            post.photos.forEach(function (src) {
+                if (!src || !isHttps(src)) { return; }
+                var img = el('img', 'tf-photo');
+                img.src = src;
+                img.alt = '';
+                img.loading = 'lazy';
+                if (post.link && isSafeLink(post.link)) {
                     var a = el('a', 'tf-photo-link');
-                    a.href = post['photo-link-url'];
+                    a.href = post.link;
                     a.target = '_blank';
                     a.rel = 'noopener noreferrer';
                     a.appendChild(img);
@@ -187,51 +264,48 @@
                     body.appendChild(img);
                 }
             });
-            if (post['photo-caption']) {
-                body.appendChild(html(el('div', 'tf-text'), post['photo-caption']));
-            }
+            if (post.body) { body.appendChild(html(el('div', 'tf-text'), post.body)); }
         },
 
         link: function (post, body) {
-            if (post['link-url']) {
+            if (post.linkUrl) {
                 var h = el('h3', 'tf-title');
-                h.appendChild(externalLink(post['link-url'], post['link-text'] || post['link-url']));
+                h.appendChild(externalLink(post.linkUrl, post.linkText || post.linkUrl));
                 body.appendChild(h);
             }
-            if (post['link-description']) {
-                body.appendChild(html(el('div', 'tf-text'), post['link-description']));
-            }
+            if (post.linkDesc) { body.appendChild(html(el('div', 'tf-text'), post.linkDesc)); }
         },
 
         video: function (post, body) {
-            var player = html(el('div', 'tf-video'), post['video-player-500'] || post['video-player']);
+            var player = html(el('div', 'tf-video'), post.player);
             if (player.querySelector('iframe, video')) {
                 body.appendChild(player);
-            } else if (post['video-source'] && isSafeLink(post['video-source'])) {
-                body.appendChild(externalLink(post['video-source'], 'Watch video', 'tf-title'));
+            } else if (post.videoUrl && isSafeLink(post.videoUrl)) {
+                body.appendChild(externalLink(post.videoUrl, 'Watch video', 'tf-title'));
             }
-            if (post['video-caption']) {
-                body.appendChild(html(el('div', 'tf-text'), post['video-caption']));
-            }
+            if (post.body) { body.appendChild(html(el('div', 'tf-text'), post.body)); }
         }
     };
 
     function renderPost(post) {
         var card = el('article', 'tf-post tf-' + post.type);
         var body = el('div', 'tf-body');
-        (renderers[post.type] || renderers.regular)(post, body);
+        (renderers[post.type] || renderers.text)(post, body);
 
         // Nothing we know how to show: skip rather than draw an empty card.
         if (!body.firstChild) { return null; }
         card.appendChild(body);
 
         var foot = el('footer', 'tf-meta');
-        foot.appendChild(externalLink(post['url-with-slug'] || post.url, formatDate(post['unix-timestamp']), 'tf-date'));
+        foot.appendChild(externalLink(post.url, formatDate(post.ts), 'tf-date'));
         card.appendChild(foot);
         return card;
     }
 
     // ---- loading ----------------------------------------------------------
+
+    var sourceIndex = 0;
+    var sourceWorked = false;
 
     function setStatus(message) {
         status.textContent = message || '';
@@ -256,6 +330,7 @@
         more.disabled = true;
         setStatus(list.children.length ? 'Loading…' : 'Loading posts…');
 
+        var source = SOURCES[sourceIndex];
         var script = document.createElement('script');
         var done = false;
         var timer = setTimeout(function () { fail(); }, TIMEOUT_MS);
@@ -272,26 +347,33 @@
         function fail() {
             if (done) { return; }
             cleanup();
+            // Until a source has worked once, quietly fall back to the next one.
+            if (!sourceWorked && sourceIndex < SOURCES.length - 1) {
+                sourceIndex += 1;
+                load();
+                return;
+            }
             setError('Couldn’t load posts right now.');
         }
 
         window[CALLBACK] = function (data) {
             if (done) { return; }
+            var result = source.parse(data);
+            if (!result) { fail(); return; }
             cleanup();
-            var posts = (data && data.posts) || [];
-            total = parseInt(data && data['posts-total'], 10) || 0;
-            posts.forEach(function (post) {
+            sourceWorked = true;
+            total = result.total;
+            result.posts.forEach(function (post) {
                 var card = renderPost(post);
                 if (card) { list.appendChild(card); }
             });
-            nextStart += posts.length;
-            more.hidden = !posts.length || nextStart >= total;
+            nextStart += result.posts.length;
+            more.hidden = !result.posts.length || nextStart >= total;
             if (list.children.length) { setStatus(''); } else { setError('No posts to show.'); }
         };
 
         script.onerror = fail;
-        script.src = BLOG + '/api/read/json?num=' + PAGE_SIZE + '&start=' + nextStart +
-            '&callback=' + CALLBACK;
+        script.src = source.url(nextStart);
         document.head.appendChild(script);
     }
 
